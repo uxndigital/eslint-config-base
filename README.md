@@ -1,31 +1,61 @@
-# Eslint Config package
-通用eslint
+# @uxndigital/eslint-config-base
 
-## Trouble
-如果`.npmrc`文件
-```json
-shared-workspace-lockfile=true
-```
-项目引用改配置包的时候，`monorepo` `root`目录下`pnpm i`后，`dependencies`会安装在`root`目录下的`node_modules`里。子`packages` `eslint --fix .`的时候会向上找到对应的依赖
-T
+A shareable, opinionated ESLint configuration for JavaScript and TypeScript projects, designed by UXN Digital. This config enforces code quality, consistent style, and best practices, with built-in support for Prettier, TypeScript, import sorting, and unused imports.
 
-当`.npmrc`文件
-```json
-shared-workspace-lockfile=false
-```
-的情况下，`pnpm i` 后`root`目录和项目里的`node_modules`都没有对应的依赖，进入到子项目里运行`npx eslint --fix .`会出现`ESLint couldn't find the plugin "eslint-plugin-prettier".`
+## Features
 
-解决方法如下:
+- **ESLint Recommended**: Extends the recommended ESLint rules.
+- **TypeScript Support**: Integrates `@typescript-eslint` for advanced TypeScript linting.
+- **Prettier Integration**: Enforces Prettier formatting via `eslint-plugin-prettier`.
+- **Import Sorting**: Automatically sorts imports using `eslint-plugin-simple-import-sort`.
+- **Unused Imports**: Detects and removes unused imports and variables with `eslint-plugin-unused-imports`.
+- **Globals**: Pre-configured for browser, Node.js, React, and JSX environments.
+
+## Installation
+
 ```bash
-pnpm add --save-dev @rushstack/eslint-patch
+npm install --save-dev @uxndigital/eslint-config-base eslint
+# or
+yarn add --dev @uxndigital/eslint-config-base eslint
+# or
+pnpm add -D @uxndigital/eslint-config-base eslint
 ```
 
-`index.js`
+> **Note:** You may also need to install peer dependencies if not already present in your project.
+
+## Usage
+
+Add the config to your ESLint configuration file (e.g., `eslint.config.js`):
+
 ```js
-require('@rushstack/eslint-patch/modern-module-resolution')
+import baseConfig from '@uxndigital/eslint-config-base';
 
-// ... your code
+export default baseConfig;
 ```
 
-或者你可以选择在项目里删除`pnpm-lock.yaml`(或者在`pnpm- workspace.yaml`删除configs的引入)，并且删除monorepo的里的配置包，这样就会从私有仓库拉取。
-> 私有仓库拉取后，配置包的`dependencies`会在node_modules里。就不会出现`eslint-plugin-prettier`找不到的情况
+Or, for legacy `.eslintrc` files:
+
+```json
+{
+  "extends": ["@uxndigital/eslint-config-base"]
+}
+```
+
+## Included Plugins & Configs
+
+- `@eslint/js`
+- `@typescript-eslint`
+- `eslint-plugin-prettier`
+- `eslint-plugin-simple-import-sort`
+- `eslint-plugin-unused-imports`
+- `eslint-config-prettier`
+- `globals`
+- `prettier`
+
+## Customization
+
+You can extend or override any rules in your own ESLint config as needed.
+
+## License
+
+MIT
