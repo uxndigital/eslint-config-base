@@ -115,7 +115,7 @@ const unusedImportsConfig: Linter.Config = {
   }
 };
 
-export default [
+const configs: Linter.Config[] = [
   {
     ignores: ['**/node_modules/', '.git/', 'build/*', 'dist/*']
   },
@@ -126,4 +126,6 @@ export default [
   simpleImportSortConfig,
   unusedImportsConfig,
   eslintPluginPrettierRecommended
-];
+] as Linter.Config[];
+
+export default configs;
