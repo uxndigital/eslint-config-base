@@ -16,10 +16,13 @@
   "main": "index.js",
   "publishConfig": {
     "access": "public",
-    "tag" : "v8"
+    "tag": "v8"
   },
   "private": false,
-  "repository": "uxndigital/eslint-config-base",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/uxndigital/eslint-config-base.git"
+  },
   "peerDependencies": {
     "eslint": "8.x.x"
   }
