@@ -1,6 +1,6 @@
 {
   "name": "@uxndigital/eslint-config-base",
-  "version": "9.0.0",
+  "version": "9.0.1",
   "author": "UXN Digital",
   "type": "module",
   "dependencies": {
