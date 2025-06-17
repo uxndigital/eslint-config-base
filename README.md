@@ -14,11 +14,11 @@ A shareable, opinionated ESLint configuration for JavaScript and TypeScript proj
 ## Installation
 
 ```bash
-npm install --save-dev @uxndigital/eslint-config-base eslint globals prettier
+npm install --save-dev @uxndigital/eslint-config-base eslint prettier
 # or
-yarn add --dev @uxndigital/eslint-config-base eslint globals prettier
+yarn add --dev @uxndigital/eslint-config-base eslint prettier
 # or
-pnpm add -D @uxndigital/eslint-config-base eslint globals prettier
+pnpm add -D @uxndigital/eslint-config-base eslint prettier
 ```
 
 > **Note:** You may also need to install peer dependencies if not already present in your project.
@@ -46,16 +46,15 @@ Or, for legacy `.eslintrc` files:
 ```js
 import baseConfig from '@uxndigital/eslint-config-base';
 
-
 export default defineConfig([
-	{
-		extends: [baseConfig],
+  {
+    extends: [baseConfig],
 
-		// anything from here will override myconfig
-		rules: {
-			"no-unused-vars": "warn",
-		},
-	},
+    // anything from here will override myconfig
+    rules: {
+      'no-unused-vars': 'warn'
+    }
+  }
 ]);
 ```
 
