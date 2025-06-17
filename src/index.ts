@@ -7,14 +7,10 @@ import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
 const commonConfig: Linter.Config = {
-  files: ['**/*.{js,jsx,mjs,cjs,ts,tsx}'],
   languageOptions: {
     sourceType: 'module',
     globals: {
-      ...globals.browser,
-      ...globals.node,
-      React: 'readonly',
-      JSX: 'readonly'
+      ...globals.node
     }
   },
   rules: {
@@ -68,7 +64,6 @@ const typescriptConfig: Linter.Config = {
 };
 
 const simpleImportSortConfig: Linter.Config = {
-  files: ['**/*.{js,jsx,mjs,cjs,ts,tsx}'],
   plugins: {
     'simple-import-sort': simpleImportSort
   },
@@ -97,7 +92,6 @@ const simpleImportSortConfig: Linter.Config = {
 };
 
 const unusedImportsConfig: Linter.Config = {
-  files: ['**/*.{js,jsx,mjs,cjs,ts,tsx}'],
   plugins: {
     'unused-imports': unusedImports as unknown as ESLint.Plugin
   },
@@ -117,7 +111,7 @@ const unusedImportsConfig: Linter.Config = {
 
 const configs: Linter.Config[] = [
   {
-    ignores: ['**/node_modules/', '.git/', 'build/*', 'dist/*']
+    ignores: ['**/node_modules/', '.git/', '**/build/*', '**/dist/*']
   },
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
