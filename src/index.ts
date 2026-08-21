@@ -3,13 +3,8 @@ import type { ESLint, Linter } from 'eslint';
 import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
 import simpleImportSort from 'eslint-plugin-simple-import-sort';
 import unusedImports from 'eslint-plugin-unused-imports';
-import { existsSync } from 'fs';
 import globals from 'globals';
-import { dirname, join } from 'path';
 import tseslint from 'typescript-eslint';
-import { fileURLToPath } from 'url';
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const commonConfig: Linter.Config = {
   languageOptions: {
@@ -35,24 +30,7 @@ const typescriptConfig: Linter.Config = {
   languageOptions: {
     parser: tseslint.parser as unknown as Linter.Parser,
     parserOptions: {
-      projectService: true,
-      tsconfigRootDir: process.cwd(),
-      // Use TypeScript 6 for typescript-eslint (TS 7 API not yet available)
-      // See: https://github.com/typescript-eslint/typescript-eslint/issues/10940
-      ...((() => {
-        // Try to find typescript-6 in consumer's node_modules or this package's node_modules
-        const possiblePaths = [
-          join(process.cwd(), 'node_modules', 'typescript-6'),
-          join(__dirname, '..', 'node_modules', 'typescript-6')
-        ];
-
-        const ts6Path = possiblePaths.find(p => existsSync(p));
-
-        if (ts6Path) {
-          return { program: undefined };
-        }
-        return {};
-      })())
+      projectService: true
     }
   },
   rules: {
@@ -133,7 +111,7 @@ const unusedImportsConfig: Linter.Config = {
 
 const configs: Linter.Config[] = [
   {
-    ignores: ['**/node_modules/', '.git/', '**/build/*', '**/dist/*']
+    ignores: ['**/node_modules/', '.git/', '**/build/*', '**/dist/*'] // acts as global ignores, due to the absence of other properties
   },
   eslint.configs.recommended,
   ...tseslint.configs.recommended,

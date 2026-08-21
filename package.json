@@ -1,6 +1,6 @@
 {
   "name": "@uxndigital/eslint-config-base",
-  "version": "9.2.0",
+  "version": "9.2.1",
   "author": "UXN Digital",
   "type": "module",
   "scripts": {
@@ -44,7 +44,6 @@
   "devDependencies": {
     "@types/node": "^26.2.0",
     "eslint": "^10.9.0",
-    "typescript": "~7.0.0",
-    "typescript-6": "npm:typescript@~6.0.3"
+    "typescript": "typescript@^7.0.2"
   }
 }
