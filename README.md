@@ -1,41 +1,16 @@
 # @uxndigital/eslint-config-base
 
-A shareable, opinionated ESLint configuration for JavaScript and TypeScript projects, designed by UXN Digital. This config enforces code quality, consistent style, and best practices, with built-in support for Prettier, TypeScript, import sorting, and unused imports.
-
-## Features
-
-- **ESLint Recommended**: Extends the recommended ESLint rules.
-- **TypeScript Support**: Integrates `@typescript-eslint` for advanced TypeScript linting.
-- **Prettier Integration**: Enforces Prettier formatting via `eslint-plugin-prettier`.
-- **Import Sorting**: Automatically sorts imports using `eslint-plugin-simple-import-sort`.
-- **Unused Imports**: Detects and removes unused imports and variables with `eslint-plugin-unused-imports`.
-- **Globals**: Pre-configured for browser, Node.js, React, and JSX environments.
+A shared flat ESLint configuration for JavaScript and TypeScript projects at
+UXN Digital. It includes ESLint recommended rules, TypeScript support, import
+sorting, unused-import detection, and Prettier integration.
 
 ## Installation
 
 ```bash
 npm install --save-dev @uxndigital/eslint-config-base eslint prettier
-# or
-yarn add --dev @uxndigital/eslint-config-base eslint prettier
-# or
-pnpm add -D @uxndigital/eslint-config-base eslint prettier
 ```
-
-### TypeScript 7 Users
-
-TypeScript 7 projects should install TypeScript 6 under the `typescript` package name for tools that import it as a peer dependency, and install TypeScript 7 under an alias:
-
-```bash
-pnpm add -D typescript@npm:@typescript/typescript6 typescript-7@npm:typescript
-```
-
-This keeps the TypeScript 7 `tsc` command and the TypeScript 6 `tsc6` command available without a binary-name conflict. `@typescript/typescript6` also re-exports the TypeScript 6 API for tooling that still requires a stable programmatic API.
-
-> **Note:** You may also need to install peer dependencies if not already present in your project.
 
 ## Usage
-
-Add the config to your ESLint configuration file (e.g., `eslint.config.js`):
 
 ```js
 import baseConfig from '@uxndigital/eslint-config-base';
@@ -43,46 +18,42 @@ import baseConfig from '@uxndigital/eslint-config-base';
 export default baseConfig;
 ```
 
-Or, for legacy `.eslintrc` files:
-
-```json
-{
-  "extends": ["@uxndigital/eslint-config-base"]
-}
-```
-
-## Override
+The default export is runtime-neutral. For a Node.js or browser project, use the
+corresponding named export:
 
 ```js
-import baseConfig from '@uxndigital/eslint-config-base';
+import {
+  baseConfigs,
+  browserConfigs,
+  nodeConfigs
+} from '@uxndigital/eslint-config-base';
 
-export default defineConfig([
-  {
-    extends: [baseConfig],
-
-    // anything from here will override myconfig
-    rules: {
-      'no-unused-vars': 'warn'
-    }
-  }
-]);
+export default browserConfigs;
 ```
 
-## Included Plugins & Configs
+- `baseConfigs`: rules only, without runtime globals. This is the default.
+- `nodeConfigs`: rules plus Node.js globals.
+- `browserConfigs`: rules plus browser globals.
+
+## TypeScript
+
+TypeScript files use the TypeScript ESLint parser and recommended rules without
+requiring type-aware project information. This keeps the config compatible with
+Vite, Next.js, Node.js, and projects whose config files are outside `tsconfig.json`.
+
+Unused-variable checks use the language-appropriate ESLint rule once per file:
+JavaScript uses `no-unused-vars`, TypeScript uses
+`@typescript-eslint/no-unused-vars`, and names beginning with `_` are ignored.
+
+## Included Plugins
 
 - `@eslint/js`
-- `@typescript-eslint`
+- `typescript-eslint`
 - `eslint-plugin-prettier`
 - `eslint-plugin-simple-import-sort`
 - `eslint-plugin-unused-imports`
 - `eslint-config-prettier`
-- `globals`
-- `prettier`
-
-## Customization
-
-You can extend or override any rules in your own ESLint config as needed.
 
 ## License
 
-MIT
+MIT © UXN Digital

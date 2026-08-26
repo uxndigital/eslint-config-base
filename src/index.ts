@@ -6,49 +6,46 @@ import unusedImports from 'eslint-plugin-unused-imports';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
-const commonConfig: Linter.Config = {
+const globalIgnores: Linter.Config = {
+  ignores: [
+    '**/node_modules/**',
+    '.git/**',
+    '**/.next/**',
+    '**/.turbo/**',
+    '**/build/**',
+    '**/coverage/**',
+    '**/dist/**',
+    '**/out/**'
+  ]
+};
+
+const commonjsConfig: Linter.Config = {
+  files: ['**/*.{cjs,cts}'],
   languageOptions: {
-    sourceType: 'module',
-    globals: {
-      ...globals.node
-    }
-  },
-  rules: {
-    'prefer-spread': 'off',
-    eqeqeq: 'off',
-    'no-unused-vars': 'off',
-    'no-constant-condition': ['warn'],
-    'prettier/prettier': ['error', {}, { usePrettierrc: true }] // Includes .prettierrc.js rules
+    sourceType: 'commonjs'
   }
 };
 
+const unusedVariablesOptions = {
+  vars: 'all' as const,
+  varsIgnorePattern: '^_',
+  args: 'after-used' as const,
+  argsIgnorePattern: '^_',
+  caughtErrors: 'all' as const,
+  caughtErrorsIgnorePattern: '^_',
+  destructuredArrayIgnorePattern: '^_'
+};
+
 const typescriptConfig: Linter.Config = {
-  files: ['**/*.ts', '**/*.tsx'],
-  plugins: {
-    '@typescript-eslint': tseslint.plugin as unknown as ESLint.Plugin
-  },
-  languageOptions: {
-    parser: tseslint.parser as unknown as Linter.Parser,
-    parserOptions: {
-      projectService: true
-    }
-  },
+  files: ['**/*.{ts,tsx,mts,cts}'],
   rules: {
+    // TypeScript ESLint's recommended preset disables the core rule for TS.
+    // Use its parser-aware rule once, with `_`-prefixed variables ignored.
+    '@typescript-eslint/no-unused-vars': ['warn', unusedVariablesOptions],
     '@typescript-eslint/no-explicit-any': 'off',
-    '@typescript-eslint/ban-ts-comment': 'off',
     '@typescript-eslint/no-empty-function': 'off',
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
-    '@typescript-eslint/no-unused-vars': [
-      'warn',
-      {
-        vars: 'all',
-        varsIgnorePattern: '^_',
-        args: 'after-used',
-        argsIgnorePattern: '^_',
-        caughtErrorsIgnorePattern: '^_'
-      }
-    ],
     '@typescript-eslint/naming-convention': [
       'error',
       {
@@ -63,6 +60,22 @@ const typescriptConfig: Linter.Config = {
   }
 };
 
+const javascriptConfig: Linter.Config = {
+  files: ['**/*.{js,jsx,mjs,cjs}'],
+  rules: {
+    // Keep the same unused-variable policy for JavaScript.
+    'no-unused-vars': ['warn', unusedVariablesOptions]
+  }
+};
+
+const sharedRules: Linter.Config = {
+  rules: {
+    'prefer-spread': 'off',
+    eqeqeq: 'off',
+    'no-constant-condition': 'warn'
+  }
+};
+
 const simpleImportSortConfig: Linter.Config = {
   plugins: {
     'simple-import-sort': simpleImportSort
@@ -72,17 +85,11 @@ const simpleImportSortConfig: Linter.Config = {
       'error',
       {
         groups: [
-          // Packages `react` related packages come first.
           ['^react', '^@?\\w'],
-          // Internal packages.
           ['^(@|components)(/.*|$)'],
-          // Side effect imports.
           ['^\\u0000'],
-          // Parent imports. Put `..` last.
           ['^\\.\\.(?!/?$)', '^\\.\\./?$'],
-          // Other relative imports. Put same-folder imports and `.` last.
           ['^\\./(?=.*/)(?!/?$)', '^\\.(?!/?$)', '^\\./?$'],
-          // Style imports.
           ['^.+\\.?(css)$']
         ]
       }
@@ -96,30 +103,55 @@ const unusedImportsConfig: Linter.Config = {
     'unused-imports': unusedImports as unknown as ESLint.Plugin
   },
   rules: {
-    'unused-imports/no-unused-imports': 'error',
-    'unused-imports/no-unused-vars': [
-      'warn',
-      {
-        vars: 'all',
-        varsIgnorePattern: '^_',
-        args: 'after-used',
-        argsIgnorePattern: '^_'
-      }
-    ]
+    // Only use this plugin for import removal. Variable checks belong to the
+    // language-specific rules above, so each variable is reported once.
+    'unused-imports/no-unused-imports': 'error'
   }
 };
 
-const configs: Linter.Config[] = [
-  {
-    ignores: ['**/node_modules/', '.git/', '**/build/*', '**/dist/*'] // acts as global ignores, due to the absence of other properties
-  },
+const sharedConfigs: Linter.Config[] = [
+  globalIgnores,
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
-  commonConfig,
+  commonjsConfig,
   typescriptConfig,
+  javascriptConfig,
+  sharedRules,
   simpleImportSortConfig,
   unusedImportsConfig,
   eslintPluginPrettierRecommended
-] as Linter.Config[];
+];
 
-export default configs;
+const nodeEnvironmentConfig: Linter.Config = {
+  languageOptions: {
+    globals: {
+      ...globals.node
+    }
+  }
+};
+
+const browserEnvironmentConfig: Linter.Config = {
+  languageOptions: {
+    globals: {
+      ...globals.browser
+    }
+  }
+};
+
+/** Runtime-neutral JavaScript and TypeScript rules. */
+export const baseConfigs: Linter.Config[] = sharedConfigs;
+
+/** Shared rules plus Node.js globals. */
+export const nodeConfigs: Linter.Config[] = [
+  ...sharedConfigs,
+  nodeEnvironmentConfig
+];
+
+/** Shared rules plus browser globals. */
+export const browserConfigs: Linter.Config[] = [
+  ...sharedConfigs,
+  browserEnvironmentConfig
+];
+
+// Keep the default runtime-neutral for cross-project reuse.
+export default baseConfigs;

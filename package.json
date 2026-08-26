@@ -1,6 +1,6 @@
 {
   "name": "@uxndigital/eslint-config-base",
-  "version": "9.2.1",
+  "version": "9.2.2",
   "author": "UXN Digital",
   "type": "module",
   "scripts": {
@@ -21,8 +21,9 @@
   "module": "./dist/index.js",
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
-      "require": "./dist/index.js"
+      "default": "./dist/index.js"
     }
   },
   "files": [
@@ -38,12 +39,12 @@
     "url": "git+https://github.com/uxndigital/eslint-config-base.git"
   },
   "peerDependencies": {
-    "eslint": "^9.0.0 || ^10.0.0",
-    "typescript": ">=5.0.0 <8.0.0"
+    "eslint": "^9.0.0 || ^10.0.0"
   },
   "devDependencies": {
     "@types/node": "^26.2.0",
     "eslint": "^10.9.0",
-    "typescript": "typescript@^7.0.2"
-  }
+    "typescript": "^5.9.3"
+  },
+  "types": "./dist/index.d.ts"
 }
